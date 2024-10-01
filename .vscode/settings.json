@@ -1,0 +1,7 @@
+{
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "c:\\Users\\WIndows 11\\OneDrive\\Code\\java\\TWOLINGO\\opencsv-5.9.jar",
+        "c:\\Users\\WIndows 11\\OneDrive\\Code\\java\\TWOLINGO\\commons-lang3-3.14.0.jar"
+    ]
+}
