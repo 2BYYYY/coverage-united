@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import java.util.Random;
 
 class printables{
     Customer cu = new Customer();
@@ -15,7 +16,13 @@ class printables{
             alreadyRegistered = cv.checkName(cu.getName());
 
             if (!alreadyRegistered) {
+                Random rd = new Random();
+                int firstSection = cu.getName().length();
+                int secondSection = cu.getCarAge();
+                int thirdSection = rd.nextInt(1000000);
+                cu.setInsuranceID(firstSection + secondSection + thirdSection);
                 readerRunning = cv.toApproved(
+                    String.valueOf(cu.getInsuranceID()),
                     cu.getName(), 
                     String.valueOf(cu.getAge()), 
                     String.valueOf(cu.getDE()), 
