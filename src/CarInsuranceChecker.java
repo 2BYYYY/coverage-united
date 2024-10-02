@@ -15,7 +15,13 @@ class printables{
             alreadyRegistered = cv.checkName(cu.getName());
 
             if (!alreadyRegistered) {
-                readerRunning = cv.toApproved(cu.getName(), String.valueOf(cu.getAge()), String.valueOf(cu.getDE()), cu.getCarModel(), String.valueOf(cu.getCarAge()), String.valueOf(cu.getAccidentHistory()));
+                readerRunning = cv.toApproved(
+                    cu.getName(), 
+                    String.valueOf(cu.getAge()), 
+                    String.valueOf(cu.getDE()), 
+                    cu.getCarModel(), 
+                    String.valueOf(cu.getCarAge()), 
+                    String.valueOf(cu.getAccidentHistory()));
             }
         }
         return readerRunning;
