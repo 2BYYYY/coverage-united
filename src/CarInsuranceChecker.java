@@ -25,6 +25,7 @@ class printables{
 
 public class CarInsuranceChecker {
     public static void main(String[] args) {
+        Customer cu = new Customer();
         Scanner sc = new Scanner(System.in);
         System.out.println("=====================");
         System.out.println("|| COVERAGE UNITED ||");
@@ -34,14 +35,23 @@ public class CarInsuranceChecker {
         System.out.println("[3] Exit");
         System.out.println("What do you want to do? ");
         Questionnaire questionnaire = new Questionnaire();
+        PremiumCalculator premCalc = new PremiumCalculator();
+        InsuranceChecker fullCov = new InsuranceChecker();
+        InsuranceChecker partialCov = new PartialCoverage();
+        InsuranceChecker basicCov = new BasicCoverage();
         int answer = sc.nextInt();
         if (answer == 1) {
             questionnaire.collectCustomerDetails();
             printables pr = new printables(questionnaire);
             pr.approved();
+            System.out.println("Customer's Premium is: " + premCalc.calculatePremium(15000, cu.getAccidentHistory(), cu.getDE()));
+            fullCov.checkInsurance(cu.getCarAge(), cu.getAccidentHistory());
+            partialCov.checkInsurance(cu.getCarAge(), cu.getAccidentHistory());
+            basicCov.checkInsurance(cu.getCarAge(), cu.getAccidentHistory());
         } else if (answer == 2){
             csvRelated cr = new csvRelated();
             cr.insuranceList();
         }
+        sc.close();
     }
 }
