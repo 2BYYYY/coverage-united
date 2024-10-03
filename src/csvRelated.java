@@ -11,36 +11,36 @@ import java.util.List;
 class approvedList {
     public void insuranceList(){
         Scanner sc = new Scanner(System.in);
-        try (CSVReader csvReader = new CSVReader(new FileReader("approvedInsurance.csv"))) {
-            List<String[]> rows = csvReader.readAll();  // Read all rows at once
-            // Iterate and print each row
+        try (CSVReader csvReader = new CSVReader(new FileReader("csvFiles/approvedInsurance.csv"))) {
+            List<String[]> rows = csvReader.readAll();  
             for (String[] row : rows) {
                     for (String value : row) {
-                        System.out.print(String.format("%-30s", value));
+                        System.out.print(String.format("%-25s", value));
                     }
                 System.out.println(); 
             }
             System.out.println("[1] Search | [2] Delete | [3] Exit");
             int choice = sc.nextInt();
                 if (choice == 1) {
-                    try (CSVReader read = new CSVReader(new FileReader("approvedInsurance.csv"))) {
+                    boolean found = false;
                         System.out.println("====================================================");
                         System.out.println("Enter Insurance ID");
                         System.out.println("====================================================");
                         sc.nextLine();
                         String searchID = sc.nextLine();
-                        for (String[] array : rows) {
-                            if (searchID.equalsIgnoreCase(array[0])) {
-                                System.out.println("Match found: " + searchID);
-                                System.out.println(String.join(",", array));
-                                break;
-                            } else {
-                                System.out.println("No match: " + searchID);
+                        for (String[] row : rows) { // no need to call csvReader.readAll() again
+                            if (row[0].equals(searchID)) {  
+                                for (String value : row) {
+                                    System.out.print(String.format("%-25s", value));
+                                }
+                                System.out.println();
+                                found = true;
+                                break; 
                             }
                         }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                        if (!found) {
+                            System.out.println("Insurance ID not found.");
+                        }
                 } 
         } catch (IOException | CsvException e) {
             e.printStackTrace();
@@ -51,11 +51,11 @@ class approvedList {
 
 
 class checkApproved extends approvedList{
-    public boolean toApproved(String name, String age, String DE, String carmodel, String carage, String AH) {
+    public boolean toApproved(String insuranceID, String name, String age, String DE, String carmodel, String carage, String AH) {
         System.out.println(name + " Approved");
         boolean success = true;
-        try (CSVWriter AWriter = new CSVWriter(new FileWriter("approvedInsurance.csv", true))) {
-            String[] aI = {name, age, DE, carmodel, carage, AH};
+        try (CSVWriter AWriter = new CSVWriter(new FileWriter("csvFiles/approvedInsurance.csv", true))) {
+            String[] aI = {insuranceID, name, age, DE, carmodel, carage, AH};
             AWriter.writeNext(aI);  
             success = false;
         } catch (IOException i) {}
@@ -67,7 +67,7 @@ class csvRelated extends checkApproved{
 
     public boolean checkName(String name) {
         boolean alreadyRegistered = false;
-        try (CSVReader AReader = new CSVReader(new FileReader("approvedInsurance.csv"))) {
+        try (CSVReader AReader = new CSVReader(new FileReader("csvFiles/approvedInsurance.csv"))) {
             String[] line;
             while ((line = AReader.readNext()) != null) {
                 if (line[0].equalsIgnoreCase(name)) {
