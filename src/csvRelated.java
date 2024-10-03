@@ -6,6 +6,7 @@ import com.opencsv.exceptions.CsvException;
 import com.opencsv.exceptions.CsvValidationException;
 import java.io.IOException;
 import java.io.FileWriter;
+import java.util.Iterator;
 import java.util.List;
 
 class approvedList {
@@ -41,7 +42,29 @@ class approvedList {
                         if (!found) {
                             System.out.println("Insurance ID not found.");
                         }
-                } 
+                } else if(choice == 2){
+                    boolean found2 = false;
+                        System.out.println("Enter Username/Email (TO DELETE): ");
+                        sc.nextLine();
+                        String searchName = sc.nextLine();
+                        
+                        Iterator<String[]> iterator = rows.iterator();
+                        while (iterator.hasNext()) {
+                            String[] leaderSearchdel = iterator.next();
+                            if (leaderSearchdel[0].equals(searchName)) {
+                                iterator.remove(); 
+                                found2 = true;
+                            }
+                        }
+                        
+                        if (!found2) {
+                            System.out.println("Name not found in the leaderboards.");
+                        } else {
+                            try (CSVWriter writer = new CSVWriter(new FileWriter("csvFiles/approvedInsurance.csv"))) {
+                                writer.writeAll(rows); 
+                            }
+                        }
+                }
         } catch (IOException | CsvException e) {
             e.printStackTrace();
         }
