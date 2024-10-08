@@ -29,6 +29,7 @@ class printables{
                     cu.getCarModel(), 
                     String.valueOf(cu.getCarAge()), 
                     String.valueOf(cu.getAccidentHistory()));
+                    //ADD MAYBE PLATENUMBER
             }
         }
         return readerRunning;

@@ -6,7 +6,7 @@ import com.opencsv.exceptions.CsvException;
 import com.opencsv.exceptions.CsvValidationException;
 import java.io.IOException;
 import java.io.FileWriter;
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.List;
 
 class approvedList {
@@ -20,7 +20,7 @@ class approvedList {
                     }
                 System.out.println(); 
             }
-            System.out.println("[1] Search | [2] Delete | [3] Exit");
+            System.out.println("[1] Search | [2] Delete | [3] Recently Deleted | [4] Exit");
             int choice = sc.nextInt();
                 if (choice == 1) {
                     boolean found = false;
@@ -47,23 +47,37 @@ class approvedList {
                         System.out.println("Enter Username/Email (TO DELETE): ");
                         sc.nextLine();
                         String searchName = sc.nextLine();
-                        
-                        Iterator<String[]> iterator = rows.iterator();
-                        while (iterator.hasNext()) {
-                            String[] leaderSearchdel = iterator.next();
-                            if (leaderSearchdel[0].equals(searchName)) {
-                                iterator.remove(); 
+                        List<String[]> filteredRows = new ArrayList<>();
+                        List<String[]> recentDel = new ArrayList<>();
+                        for (String[] row : rows) {
+                            if (!row[0].equals(searchName)) { 
+                                filteredRows.add(row);
                                 found2 = true;
+                            } else if (row[0].equals(searchName)){
+                                recentDel.add(row);
+                                CSVWriter writer = new CSVWriter(new FileWriter("csvFiles/recentlyDeleted.csv",true));
+                                writer.writeAll(recentDel); 
+                                writer.close();
                             }
                         }
                         
                         if (!found2) {
                             System.out.println("Name not found in the leaderboards.");
                         } else {
-                            try (CSVWriter writer = new CSVWriter(new FileWriter("csvFiles/approvedInsurance.csv"))) {
-                                writer.writeAll(rows); 
-                            }
+                            CSVWriter writer = new CSVWriter(new FileWriter("csvFiles/approvedInsurance.csv"));
+                            writer.writeAll(filteredRows); 
+                            writer.close();
                         }
+
+                } else if (choice == 3){
+                    CSVReader RDReader = new CSVReader(new FileReader("csvFiles/recentlyDeleted.csv"));
+                    List<String[]> rdRows = RDReader.readAll();  
+                    for (String[] row : rdRows) {
+                            for (String value : row) {
+                                System.out.print(String.format("%-25s", value));
+                            }
+                        System.out.println(); 
+                    } 
                 }
         } catch (IOException | CsvException e) {
             e.printStackTrace();
