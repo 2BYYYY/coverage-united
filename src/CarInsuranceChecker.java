@@ -10,6 +10,7 @@ class printables{
         boolean readerRunning = true;
         if (cu.getAge() < 18) {
             System.out.println(cu.getName() + " Not Approved");
+            return false;
         } else {
             boolean alreadyRegistered = false; 
             csvRelated cv = new csvRelated();
@@ -39,7 +40,6 @@ class printables{
 
 public class CarInsuranceChecker {
     public static void main(String[] args) {
-        Customer cu = new Customer();
         Scanner sc = new Scanner(System.in);
         System.out.println("=====================");
         System.out.println("|| COVERAGE UNITED ||");
@@ -57,11 +57,14 @@ public class CarInsuranceChecker {
         if (answer == 1) {
             questionnaire.collectCustomerDetails();
             printables pr = new printables(questionnaire);
-            pr.approved();
-            System.out.println("Customer's Premium is: " + premCalc.calculatePremium(15000, cu.getAccidentHistory(), cu.getDE()));
-            fullCov.checkInsurance(cu.getCarAge(), cu.getAccidentHistory());
-            partialCov.checkInsurance(cu.getCarAge(), cu.getAccidentHistory());
-            basicCov.checkInsurance(cu.getCarAge(), cu.getAccidentHistory());
+            if(pr.approved() == true){
+                System.out.println("Customer's Premium is: " + premCalc.calculatePremium(15000, questionnaire.getAccidentHistory(), questionnaire.getDE()));
+                fullCov.checkInsurance(questionnaire.getCarAge(), questionnaire.getAccidentHistory());
+                partialCov.checkInsurance(questionnaire.getCarAge(), questionnaire.getAccidentHistory());
+                basicCov.checkInsurance(questionnaire.getCarAge(), questionnaire.getAccidentHistory());
+
+            }
+            
         } else if (answer == 2){
             csvRelated cr = new csvRelated();
             cr.insuranceList();
