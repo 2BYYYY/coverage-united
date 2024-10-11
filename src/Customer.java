@@ -2,6 +2,7 @@ public class Customer extends Person{
     private String carModel;
     private int carAge;
     private int accidentHistory;
+    private String plateNumber;
 
     public String getCarModel(){
         return carModel;
@@ -11,6 +12,13 @@ public class Customer extends Person{
     }
     public int getAccidentHistory(){
         return accidentHistory;
+    }
+    public String getPlateNumber(){
+        return plateNumber;
+    }
+    
+    public void setPlateNumber(String plateNumber){
+        this.plateNumber = plateNumber;
     }
     public void setCarModel(String carModel){
         this.carModel = carModel;

@@ -9,14 +9,61 @@ import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-class approvedList {
+
+
+class registeredToAdd {
+    public void registerChange(String insuranceID, String PN, String carModel, String TOI, String PM) {
+        try (CSVReader csvReader = new CSVReader(new FileReader("csvFiles/approvedInsurance.csv"))) {
+            List<String[]> rows = csvReader.readAll();
+            int countRows = 0;
+            for (String[] row : rows) {
+                if (row[1].equals(insuranceID)) {
+                    countRows +=1;
+                }
+            }
+            for (String[] row : rows) {
+                if (row[0].equals("0") && row[1].equals(insuranceID)) {
+                    try (CSVWriter writer = new CSVWriter(new FileWriter("csvFiles/approvedInsurance.csv", true))) {
+                        String[] updatedRow = {String.valueOf(countRows), insuranceID, PN, row[3], row[4], carModel, TOI, PM};
+                        writer.writeNext(updatedRow);
+                    } catch (IOException e) {}
+                }
+            }
+
+        } catch (IOException | CsvException e) {}
+    }
+    public void registerChange(String insuranceID, String PN, String carModel, String carAge, String AH, String TOI, String PM) {
+        try (CSVReader csvReader = new CSVReader(new FileReader("csvFiles/fullListOfInsurance.csv"))) {
+            List<String[]> rows = csvReader.readAll();
+            int countRows = 0;
+            for (String[] row : rows) {
+                if (row[1].equals(insuranceID)) {
+                    countRows +=1;
+                }
+            }
+            for (String[] row : rows) {
+                if (row[0].equals("0") && row[1].equals(insuranceID)) {
+                    try (CSVWriter writer = new CSVWriter(new FileWriter("csvFiles/fullListOfInsurance.csv", true))) {
+                        String[] updatedRow = {String.valueOf(countRows), insuranceID, row[2], row[3], row[4], carModel, carAge, AH, PN, TOI, PM};
+                        writer.writeNext(updatedRow);
+                    } catch (IOException e) {}
+                }
+            }
+
+        } catch (IOException | CsvException e) {}
+    }
+}
+
+class approvedList extends registeredToAdd{
     public void insuranceList(){
         Scanner sc = new Scanner(System.in);
-        try (CSVReader csvReader = new CSVReader(new FileReader("csvFiles/approvedInsurance.csv"))) {
-            List<String[]> rows = csvReader.readAll();  
+        try (CSVReader csvReaderAI = new CSVReader(new FileReader("csvFiles/approvedInsurance.csv")))  {
+            List<String[]> rows = csvReaderAI.readAll();
+            CSVReader csvReaderFLOI = new CSVReader(new FileReader("csvFiles/fullListOfInsurance.csv"));
+            List<String[]> rowFLOI = csvReaderFLOI.readAll();
             for (String[] row : rows) {
                     for (String value : row) {
-                        System.out.print(String.format("%-25s", value));
+                        System.out.print(String.format("%-15s", value));
                     }
                 System.out.println(); 
             }
@@ -44,31 +91,82 @@ class approvedList {
                         }
                 } else if(choice == 2){
                     boolean found2 = false;
-                        System.out.println("Enter Username/Email (TO DELETE): ");
-                        sc.nextLine();
-                        String searchName = sc.nextLine();
-                        List<String[]> filteredRows = new ArrayList<>();
-                        List<String[]> recentDel = new ArrayList<>();
+                    System.out.println("[1] Full delete");
+                    System.out.println("[2] Car delete");
+                    int fOc = sc.nextInt();
+                    sc.nextLine();  // Consume the newline
+                    System.out.println("Enter Username/Email (TO DELETE): ");
+                    String searchName = sc.nextLine();
+                    List<String[]> filteredRows = new ArrayList<>();
+                    List<String[]> filteredRowsFLOI = new ArrayList<>();
+
+                    if (fOc == 1) {
+                        // Full delete
                         for (String[] row : rows) {
-                            if (!row[0].equals(searchName)) { 
-                                filteredRows.add(row);
-                                found2 = true;
-                            } else if (row[0].equals(searchName)){
-                                recentDel.add(row);
-                                CSVWriter writer = new CSVWriter(new FileWriter("csvFiles/recentlyDeleted.csv",true));
-                                writer.writeAll(recentDel); 
-                                writer.close();
+                            if (!row[1].equals(searchName)) {
+                                filteredRows.add(row);  // Keep rows that don't match
+                            } else {
+                                found2 = true;  // Mark as found when deleted
                             }
                         }
-                        
-                        if (!found2) {
-                            System.out.println("Name not found in the leaderboards.");
-                        } else {
-                            CSVWriter writer = new CSVWriter(new FileWriter("csvFiles/approvedInsurance.csv"));
-                            writer.writeAll(filteredRows); 
-                            writer.close();
+
+                        for (String[] row : rowFLOI) {
+                            if (!row[1].equals(searchName)) {
+                                filteredRowsFLOI.add(row);  // Keep rows that don't match
+                            } else {
+                                // Add deleted row to "recently deleted" file
+                                List<String[]> recentDel = new ArrayList<>();
+                                recentDel.add(row);
+                                try (CSVWriter writer = new CSVWriter(new FileWriter("csvFiles/recentlyDeleted.csv", true))) {
+                                    writer.writeAll(recentDel);
+                                }
+                                found2 = true;  // Mark as found when deleted
+                            }
                         }
 
+                    } else if (fOc == 2) {
+                        // Car delete (deleting by plate number)
+                        System.out.println("Enter Plate Number (TO DELETE): ");
+                        String plateNumber = sc.nextLine();
+
+                        for (String[] row : rows) {
+                            if (!(row[1].equals(searchName) && row[2].equals(plateNumber))) {
+                                filteredRows.add(row);  // Keep rows that don't match
+                            } else {
+                                found2 = true;  // Mark as found when deleted
+                            }
+                        }
+
+                        for (String[] row : rowFLOI) {
+                            if (!(row[1].equals(searchName) && row[8].equals(plateNumber))) {
+                                filteredRowsFLOI.add(row);  // Keep rows that don't match the criteria
+                            } else {
+                                List<String[]> recentDel = new ArrayList<>();
+                                recentDel.add(row);
+                                try (CSVWriter writer = new CSVWriter(new FileWriter("csvFiles/recentlyDeleted.csv", true))) {
+                                    writer.writeAll(recentDel);
+                                }
+                                found2 = true;  // Mark as found when deleted
+                            }
+                        }
+                    }
+
+                    // Check if any record was found and deleted
+                    if (!found2) {
+                        System.out.println("Name not found in the list.");
+                    } else {
+                        // Write the updated approvedInsurance.csv
+                        try (CSVWriter writer = new CSVWriter(new FileWriter("csvFiles/approvedInsurance.csv"))) {
+                            writer.writeAll(filteredRows);
+                        }
+
+                        // Write the updated fullListOfInsurance.csv
+                        try (CSVWriter writer2 = new CSVWriter(new FileWriter("csvFiles/fullListOfInsurance.csv"))) {
+                            writer2.writeAll(filteredRowsFLOI);
+                        }
+
+                        System.out.println("Record(s) successfully deleted.");
+                    }
                 } else if (choice == 3){
                     CSVReader RDReader = new CSVReader(new FileReader("csvFiles/recentlyDeleted.csv"));
                     List<String[]> rdRows = RDReader.readAll();  
@@ -85,35 +183,46 @@ class approvedList {
     }
 }
 
-
-
 class checkApproved extends approvedList{
-    public boolean toApproved(String insuranceID, String name, String age, String DE, String carmodel, String carage, String AH) {
+    public void toApproved(String index, String insuranceID, String PL, String name, String age, String carmodel, String TOI, String pAccount) {
         System.out.println(name + " Approved");
-        boolean success = true;
         try (CSVWriter AWriter = new CSVWriter(new FileWriter("csvFiles/approvedInsurance.csv", true))) {
-            String[] aI = {insuranceID, name, age, DE, carmodel, carage, AH};
+            String[] aI = {index, insuranceID, PL, name, age, carmodel, TOI, pAccount};
             AWriter.writeNext(aI);  
-            success = false;
         } catch (IOException i) {}
-        return success; 
+    }
+    public void toApproved(String number, String insuranceID, String name, String age, String DE, String carmodel, String carage, String AH, String plateNumber, String TOI, String premAcc) {
+        try (CSVWriter AWriter = new CSVWriter(new FileWriter("csvFiles/fullListOfInsurance.csv", true))) {
+            String[] aI2 = {number, insuranceID, name, age, DE, carmodel, carage, AH, plateNumber, TOI, premAcc};
+            AWriter.writeNext(aI2);  
+        } catch (IOException i) {}
     }
 }
 
 class csvRelated extends checkApproved{
-
     public boolean checkName(String name) {
         boolean alreadyRegistered = false;
         try (CSVReader AReader = new CSVReader(new FileReader("csvFiles/approvedInsurance.csv"))) {
             String[] line;
             while ((line = AReader.readNext()) != null) {
-                if (line[0].equalsIgnoreCase(name)) {
+                if (line[1].equalsIgnoreCase(name)) {
                     System.out.println("Already Registered");
-                    alreadyRegistered = true;
                     break;  
                 }
             }
         } catch (CsvValidationException | IOException e) {}
         return alreadyRegistered;  
+    }
+    public boolean checkInsID(String ID){
+        boolean registeredID = false;
+        try (CSVReader AReader = new CSVReader(new FileReader("csvFiles/approvedInsurance.csv"))) {
+            List<String[]> rows = AReader.readAll();  
+            for (String[] row : rows) {
+                if (row[1].equals(ID)){
+                    registeredID = true;
+                }
+            }
+        } catch (IOException | CsvException e) {}
+        return registeredID;  
     }
 }
