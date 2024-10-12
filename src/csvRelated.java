@@ -67,7 +67,7 @@ class approvedList extends registeredToAdd{
                     }
                 System.out.println(); 
             }
-            System.out.println("[1] Search | [2] Delete | [3] Recently Deleted | [4] Exit");
+            System.out.println("[1] Search | [2] Delete | [3] Recently Deleted | [4] Get Customer information || [5] Exit");
             int choice = sc.nextInt();
                 if (choice == 1) {
                     boolean found = false;
@@ -94,73 +94,65 @@ class approvedList extends registeredToAdd{
                     System.out.println("[1] Full delete");
                     System.out.println("[2] Car delete");
                     int fOc = sc.nextInt();
-                    sc.nextLine();  // Consume the newline
+                    sc.nextLine(); 
                     System.out.println("Enter Username/Email (TO DELETE): ");
                     String searchName = sc.nextLine();
                     List<String[]> filteredRows = new ArrayList<>();
                     List<String[]> filteredRowsFLOI = new ArrayList<>();
 
                     if (fOc == 1) {
-                        // Full delete
                         for (String[] row : rows) {
                             if (!row[1].equals(searchName)) {
-                                filteredRows.add(row);  // Keep rows that don't match
+                                filteredRows.add(row); 
                             } else {
-                                found2 = true;  // Mark as found when deleted
+                                found2 = true; 
                             }
                         }
 
                         for (String[] row : rowFLOI) {
                             if (!row[1].equals(searchName)) {
-                                filteredRowsFLOI.add(row);  // Keep rows that don't match
+                                filteredRowsFLOI.add(row);
                             } else {
-                                // Add deleted row to "recently deleted" file
                                 List<String[]> recentDel = new ArrayList<>();
                                 recentDel.add(row);
                                 try (CSVWriter writer = new CSVWriter(new FileWriter("csvFiles/recentlyDeleted.csv", true))) {
                                     writer.writeAll(recentDel);
                                 }
-                                found2 = true;  // Mark as found when deleted
+                                found2 = true;  
                             }
                         }
 
                     } else if (fOc == 2) {
-                        // Car delete (deleting by plate number)
                         System.out.println("Enter Plate Number (TO DELETE): ");
                         String plateNumber = sc.nextLine();
 
                         for (String[] row : rows) {
                             if (!(row[1].equals(searchName) && row[2].equals(plateNumber))) {
-                                filteredRows.add(row);  // Keep rows that don't match
+                                filteredRows.add(row);
                             } else {
-                                found2 = true;  // Mark as found when deleted
+                                found2 = true;
                             }
                         }
 
                         for (String[] row : rowFLOI) {
                             if (!(row[1].equals(searchName) && row[8].equals(plateNumber))) {
-                                filteredRowsFLOI.add(row);  // Keep rows that don't match the criteria
+                                filteredRowsFLOI.add(row);
                             } else {
                                 List<String[]> recentDel = new ArrayList<>();
                                 recentDel.add(row);
                                 try (CSVWriter writer = new CSVWriter(new FileWriter("csvFiles/recentlyDeleted.csv", true))) {
                                     writer.writeAll(recentDel);
                                 }
-                                found2 = true;  // Mark as found when deleted
+                                found2 = true; 
                             }
                         }
                     }
-
-                    // Check if any record was found and deleted
                     if (!found2) {
                         System.out.println("Name not found in the list.");
                     } else {
-                        // Write the updated approvedInsurance.csv
                         try (CSVWriter writer = new CSVWriter(new FileWriter("csvFiles/approvedInsurance.csv"))) {
                             writer.writeAll(filteredRows);
                         }
-
-                        // Write the updated fullListOfInsurance.csv
                         try (CSVWriter writer2 = new CSVWriter(new FileWriter("csvFiles/fullListOfInsurance.csv"))) {
                             writer2.writeAll(filteredRowsFLOI);
                         }
@@ -176,6 +168,22 @@ class approvedList extends registeredToAdd{
                             }
                         System.out.println(); 
                     } 
+                } else if(choice == 4){
+                    List<String[]> getRowsFLOI = new ArrayList<>();
+                    System.out.println("Enter Insurance ID");
+                    int inID = sc.nextInt();
+                    for (String[] row : rowFLOI) {
+                        if (row[1].equals(String.valueOf(inID))) {
+                            getRowsFLOI.add(row); 
+                        }
+                    }
+                    try (CSVWriter writer = new CSVWriter(new FileWriter("csvFiles/"+ inID + ".csv", true))) {
+                        String[] header = {"Index","InsuranceID","Name","Age","Driving Experience","Car Model","Car Age","Accident History","Plate Number","Type Of Insurance","Premium Amount"};
+                        writer.writeNext(header);
+                        writer.writeAll(getRowsFLOI);
+                    } catch(IOException e){
+                        System.out.println("Error reading CSV file: " + e.getMessage());
+                    }
                 }
         } catch (IOException | CsvException e) {
             e.printStackTrace();
