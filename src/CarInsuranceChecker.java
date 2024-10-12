@@ -3,10 +3,36 @@ import java.util.Random;
 
 class printables{
     Questionnaire qu = new Questionnaire();
+    InsuranceChecker covType = new BasicCoverage();
     public printables(Questionnaire qu) {
         this.qu = qu;
     }
+    public String insuranceChecking(int carAge, int accidentHistory){
+        if (carAge <= 5 && accidentHistory == 0) {
+            return "Full Coverage";
+        } else if(carAge >= 6 && carAge <= 10 || accidentHistory >= 1){
+            return "Partial Coverage";
+        } else if(carAge > 10){
+            return "Basic Coverage";
+        }
+        return "Basic Coverage";
+    }
+
+    public int premiumValue(int premiumAmount, int accidentHistory, int drivingExperience){
+        premiumAmount += (7500 * accidentHistory);
+        if(drivingExperience < 3){
+            premiumAmount += 3000;
+        } else if(drivingExperience > 5){
+            premiumAmount -= (premiumAmount * .10);
+        } else if(drivingExperience > 10){
+            premiumAmount -= 1500;
+            premiumAmount -= (premiumAmount * .20);
+        }
+
+        return premiumAmount;
+    }
     public boolean approved() {
+        
         if (qu.getAge() < 18) {
             System.out.println(qu.getName() + " Not Approved");
             return true;
@@ -28,8 +54,8 @@ class printables{
                     String.valueOf(qu.getName()), 
                     String.valueOf(qu.getAge()), 
                     qu.getCarModel(), 
-                    "Partial Coverage", 
-                    "10000");
+                    insuranceChecking(qu.getCarAge(), qu.getAccidentHistory()), 
+                    Integer.toString(premiumValue(15000, qu.getAccidentHistory(), qu.getDE())));
                 cv.toApproved(
                     "0",
                     String.valueOf(qu.getInsuranceID()),
@@ -40,8 +66,9 @@ class printables{
                     String.valueOf(qu.getCarAge()), 
                     String.valueOf(qu.getAccidentHistory()),
                     qu.getPlateNumber(),
-                    "Partial Coverage",
-                    "10000");
+                    insuranceChecking(qu.getCarAge(), qu.getAccidentHistory()),
+                    Integer.toString(premiumValue(15000, qu.getAccidentHistory(), qu.getDE())));
+                    
             }
         }
         return false;
@@ -77,9 +104,7 @@ public class CarInsuranceChecker {
             printables pr = new printables(questionnaire);
                 if(pr.approved() != true){
                     System.out.println("Customer's Premium is: " + premCalc.calculatePremium(15000, questionnaire.getAccidentHistory(), questionnaire.getDE()));
-                    fullCov.checkInsurance(questionnaire.getCarAge(), questionnaire.getAccidentHistory());
-                    partialCov.checkInsurance(questionnaire.getCarAge(), questionnaire.getAccidentHistory());
-                    basicCov.checkInsurance(questionnaire.getCarAge(), questionnaire.getAccidentHistory());
+                    System.out.println("Insurance Type: " + pr.insuranceChecking(questionnaire.getCarAge(), questionnaire.getAccidentHistory()));
                 }
             }  
         } else if (answer == 2){
