@@ -1,0 +1,5 @@
+"Index","InsuranceID","Name","Age","Driving Experience","Car Model","Car Age","Accident History","Plate Number","Type Of Insurance","Premium Amount"
+"0","704772","toby","19","2","toyota","3","2","D2SC","Partial Coverage","10000"
+"0","383289","jared","33","2","2","3","4","GDS2","Partial Coverage","10000"
+"0","628658","josh","23","2","tesla","2","3","DGS3","Partial Coverage","10000"
+"1","704772","toby","19","2","toyota","3","2","FEA2","Partial Coverage","10000"
