@@ -15,7 +15,7 @@ class InsuranceChecker {
 class PartialCoverage extends InsuranceChecker {
     @Override
     public String checkInsurance(int carAge, int accidentHistory) {
-        if (carAge <= 6) {
+        if (carAge <= 6 && carAge <= 6 && accidentHistory > 0) {
             System.out.println("Insurance Type: ");
             icReturn = "Partial Coverage";
             System.out.println(icReturn);

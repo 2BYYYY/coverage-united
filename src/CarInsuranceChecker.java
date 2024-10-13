@@ -1,6 +1,7 @@
 import java.util.Scanner;
 import java.util.Random;
 import java.util.InputMismatchException;
+import java.io.*; 
 
 class printables extends PremiumCalculator {
     Questionnaire qu = new Questionnaire();
