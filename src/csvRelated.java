@@ -63,7 +63,7 @@ class approvedList extends registeredToAdd{
             List<String[]> rowFLOI = csvReaderFLOI.readAll();
             for (String[] row : rows) {
                     for (String value : row) {
-                        System.out.print(String.format("%-15s", value));
+                        System.out.print(String.format("%-25s", value));
                     }
                 System.out.println(); 
             }
@@ -193,7 +193,9 @@ class approvedList extends registeredToAdd{
 
 class checkApproved extends approvedList{
     public void toApproved(String index, String insuranceID, String PL, String name, String age, String carmodel, String TOI, String pAccount) {
+        System.out.println("=====================");
         System.out.println(name + " Approved");
+        System.out.println("=====================");
         try (CSVWriter AWriter = new CSVWriter(new FileWriter("csvFiles/approvedInsurance.csv", true))) {
             String[] aI = {index, insuranceID, PL, name, age, carmodel, TOI, pAccount};
             AWriter.writeNext(aI);  

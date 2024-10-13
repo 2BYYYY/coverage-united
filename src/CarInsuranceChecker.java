@@ -1,30 +1,26 @@
 import java.util.Scanner;
 import java.util.Random;
+import java.util.InputMismatchException;
 
 class printables extends PremiumCalculator {
     Questionnaire qu = new Questionnaire();
-    InsuranceChecker covType = new BasicCoverage();
+    InsuranceChecker fCov = new InsuranceChecker();
+    InsuranceChecker pCov = new PartialCoverage();
+    InsuranceChecker bCov = new BasicCoverage();
 
     public printables(Questionnaire qu) {
         this.qu = qu;
     }
 
-    public String insuranceChecking(int carAge, int accidentHistory){
-        if (carAge <= 5 && accidentHistory == 0) {
-            return "Full Coverage";
-        } else if(carAge >= 6 && carAge <= 10 || accidentHistory >= 1){
-            return "Partial Coverage";
-        } else if(carAge > 10){
-            return "Basic Coverage";
-        }
-        return "Basic Coverage";
+    public printables(InsuranceChecker fCov, InsuranceChecker pCov, InsuranceChecker bCov){
+        this.fCov = fCov;
+        this.pCov = pCov;
+        this.bCov = bCov;
     }
 
     public boolean approved() {
-
         if (qu.getAge() < 18) {
             System.out.println(qu.getName() + " Not Approved");
-            return true;
         } else {
             boolean alreadyRegistered = false;
             csvRelated cv = new csvRelated();
@@ -36,6 +32,9 @@ class printables extends PremiumCalculator {
                 int secondSection = qu.getCarAge();
                 int thirdSection = rd.nextInt(1000000);
                 qu.setInsuranceID(firstSection + secondSection + thirdSection);
+                String FullCov = fCov.checkInsurance(qu.getCarAge(), qu.getAccidentHistory());
+                String PartialCov = pCov.checkInsurance(qu.getCarAge(), qu.getAccidentHistory());
+                String BasicCov = bCov.checkInsurance(qu.getCarAge(), qu.getAccidentHistory());
                 cv.toApproved(
                         "0",
                         String.valueOf(qu.getInsuranceID()),
@@ -43,7 +42,7 @@ class printables extends PremiumCalculator {
                         String.valueOf(qu.getName()),
                         String.valueOf(qu.getAge()),
                         qu.getCarModel(),
-                        insuranceChecking(qu.getCarAge(), qu.getAccidentHistory()),
+                        FullCov + PartialCov + BasicCov,
                         Integer.toString(calculatePremium(15000, qu.getAccidentHistory(), qu.getDE())));
                 cv.toApproved(
                         "0",
@@ -55,7 +54,9 @@ class printables extends PremiumCalculator {
                         String.valueOf(qu.getCarAge()),
                         String.valueOf(qu.getAccidentHistory()),
                         qu.getPlateNumber(),
-                        insuranceChecking(qu.getCarAge(), qu.getAccidentHistory()),
+                        //
+                        FullCov + PartialCov + BasicCov,
+                        //
                         Integer.toString(calculatePremium(15000, qu.getAccidentHistory(), qu.getDE())));
 
             }
@@ -66,42 +67,68 @@ class printables extends PremiumCalculator {
 
 public class CarInsuranceChecker {
     public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        System.out.println("=====================");
-        System.out.println("|| COVERAGE UNITED ||");
-        System.out.println("=====================");
-        System.out.println("[1] Insurance Checker");
-        System.out.println("[2] View Insurance List");
-        System.out.println("[3] Exit");
-        System.out.println("What do you want to do? ");
-        Questionnaire questionnaire = new Questionnaire();
-        PremiumCalculator premCalc = new PremiumCalculator();
-        InsuranceChecker fullCov = new InsuranceChecker();
-        InsuranceChecker partialCov = new PartialCoverage();
-        InsuranceChecker basicCov = new BasicCoverage();
-        int answer = sc.nextInt();
-        if (answer == 1) {
-            System.out.println("[1] Registered");
-            System.out.println("[2] Not yet Registered");
-            int answer2 = sc.nextInt();
-            if (answer2 == 1) {
-                questionnaire.regCollectCustomerDetails();
-
-            } else if (answer2 == 2) {
-                questionnaire.collectCustomerDetails();
-
-                printables pr = new printables(questionnaire);
-                if (pr.approved() != true) {
-                    System.out.println("Customer's Premium is: " + premCalc.calculatePremium(15000,
-                            questionnaire.getAccidentHistory(), questionnaire.getDE()));
-                    System.out.println("Insurance Type: "
-                            + fullCov.checkInsurance(questionnaire.getCarAge(), questionnaire.getAccidentHistory())+ partialCov.checkInsurance(questionnaire.getCarAge(), questionnaire.getAccidentHistory()) + basicCov.checkInsurance(questionnaire.getCarAge(), questionnaire.getAccidentHistory()));
+        Boolean running = true;
+        while (running) {
+            try {
+                Scanner sc = new Scanner(System.in);
+                System.out.println("=====================");
+                System.out.println("|| COVERAGE UNITED ||");
+                System.out.println("=====================");
+                System.out.println("[1] Insurance Checker || [2] View Insurance List || [3] Exit");
+                System.out.print("Enter: ");
+                Questionnaire questionnaire = new Questionnaire();
+                PremiumCalculator premCalc = new PremiumCalculator();
+                int answer = sc.nextInt();
+                if (answer == 1) {
+                    boolean runningOne = true;
+                    while(runningOne){
+                        try {
+                            System.out.println("=======================");
+                            System.out.println("|| Insurance Checker ||");
+                            System.out.println("=======================");
+                            System.out.println("[1] Old Customer || [2] New Customer || [3] Go Back");
+                            System.out.print("Enter: ");
+                            int answer2 = sc.nextInt();
+                            if (answer2 == 1) {
+                                questionnaire.regCollectCustomerDetails();
+                            } else if (answer2 == 2) {
+                                questionnaire.collectCustomerDetails();
+                                printables pr = new printables(questionnaire);
+                                if (pr.approved() != true) {
+                                    System.out.println("Customer's Premium is: " + 
+                                        premCalc.calculatePremium(15000,
+                                         questionnaire.getAccidentHistory(), questionnaire.getDE()));
+                                    
+                                }
+                            } else if (answer2 == 3){
+                                break;
+                            } else {
+                                System.out.println("================================");
+                                System.out.println("Choose from the choices please");
+                                System.out.println("================================");
+                            }
+                        } catch (InputMismatchException e) {
+                            System.out.println("================================");
+                            System.out.println("Choose from the choices please");
+                            System.out.println("================================");
+                            sc.nextLine();
+                        }
+                    }
+                } else if (answer == 2) {
+                    csvRelated cr = new csvRelated();
+                    cr.insuranceList();
+                } else if (answer == 3){
+                    running = false;
+                } else {
+                    System.out.println("================================");
+                    System.out.println("Choose from the choices please");
+                    System.out.println("================================");
                 }
+            } catch (InputMismatchException e) {
+                System.out.println("================================");
+                System.out.println("Choose from the choices please");
+                System.out.println("================================");
             }
-        } else if (answer == 2) {
-            csvRelated cr = new csvRelated();
-            cr.insuranceList();
         }
-        sc.close();
     }
 }
