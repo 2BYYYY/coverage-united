@@ -27,6 +27,7 @@ public class Questionnaire extends Customer{
 
         System.out.print("Enter customer accident history: ");
         setAccidentHistory(sc.nextInt());
+        
     }
     public void regCollectCustomerDetails() {
         csvRelated cv = new csvRelated();
