@@ -1,7 +1,7 @@
 import java.util.Scanner;
 import java.util.Random;
 
-class printables{
+class printables extends PremiumCalculator{
     Questionnaire qu = new Questionnaire();
     InsuranceChecker covType = new BasicCoverage();
     public printables(Questionnaire qu) {
@@ -18,19 +18,6 @@ class printables{
         return "Basic Coverage";
     }
 
-    public int premiumValue(int premiumAmount, int accidentHistory, int drivingExperience){
-        premiumAmount += (7500 * accidentHistory);
-        if(drivingExperience < 3){
-            premiumAmount += 3000;
-        } else if(drivingExperience > 5){
-            premiumAmount -= (premiumAmount * .10);
-        } else if(drivingExperience > 10){
-            premiumAmount -= 1500;
-            premiumAmount -= (premiumAmount * .20);
-        }
-
-        return premiumAmount;
-    }
     public boolean approved() {
         
         if (qu.getAge() < 18) {
@@ -55,7 +42,7 @@ class printables{
                     String.valueOf(qu.getAge()), 
                     qu.getCarModel(), 
                     insuranceChecking(qu.getCarAge(), qu.getAccidentHistory()), 
-                    Integer.toString(premiumValue(15000, qu.getAccidentHistory(), qu.getDE())));
+                    Integer.toString(calculatePremium(15000, qu.getAccidentHistory(), qu.getDE())));
                 cv.toApproved(
                     "0",
                     String.valueOf(qu.getInsuranceID()),
@@ -67,7 +54,7 @@ class printables{
                     String.valueOf(qu.getAccidentHistory()),
                     qu.getPlateNumber(),
                     insuranceChecking(qu.getCarAge(), qu.getAccidentHistory()),
-                    Integer.toString(premiumValue(15000, qu.getAccidentHistory(), qu.getDE())));
+                    Integer.toString(calculatePremium(15000, qu.getAccidentHistory(), qu.getDE())));
                     
             }
         }
