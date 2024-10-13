@@ -1,1 +1,4 @@
-"InsuranceID","Name","Age","Driving Experience","Car Model","Car Age","Accident History","Plate Number","Type Of Insurance","Premium Amount"
+"Index","InsuranceID","Name","Age","Experience","Car Model","Car Age","Accident History","Plate Number","Type Of Insurance","Premium Amount"
+"0","695146","dandan","19","3","toyota","2","4","AGL2","Partial Coverage","45000"
+"1","695146","dandan","19","3","mitsu","2","6","AEX2","Partial Coverage","60000"
+"2","695146","dandan","19","3","fodu","4","4","JRC4","Partial Coverage","45000"

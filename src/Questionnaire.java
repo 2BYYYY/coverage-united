@@ -31,6 +31,10 @@ public class Questionnaire extends Customer{
     }
     public void regCollectCustomerDetails() {
         csvRelated cv = new csvRelated();
+        InsuranceChecker fCov = new InsuranceChecker();
+        InsuranceChecker pCov = new PartialCoverage();
+        InsuranceChecker bCov = new BasicCoverage();
+        PremiumCalculator pCal = new PremiumCalculator();
         Scanner sc = new Scanner(System.in);
 
         System.out.print("Enter InsuranceID: ");
@@ -50,19 +54,29 @@ public class Questionnaire extends Customer{
             System.out.print("Enter customer accident history: ");
             int CSH = sc.nextInt();
 
+            System.out.print("Enter customer Driving Experience: ");
+            int DE = sc.nextInt();
+
+            String FullCov = fCov.checkInsurance(CCA, CSH);
+            String PartialCov = pCov.checkInsurance(CCA, CSH);
+            String BasicCov = bCov.checkInsurance(CCA, CSH);
+
             cv.registerChange(String.valueOf(insueID),
                                 PN,
                                 CCM,
-                                "A",
-                                "B");
+                                FullCov + PartialCov + BasicCov,
+                                Integer.toString(pCal.calculatePremium(15000, CSH, DE)));
             cv.registerChange(String.valueOf(insueID),
                                 PN,
                                 CCM,
                                 String.valueOf(CCA),
                                 String.valueOf(CSH),
-                                "A",
-                                "B");
-
+                                FullCov + PartialCov + BasicCov,
+                                Integer.toString(pCal.calculatePremium(15000, CSH, DE)));
+            System.out.println("Customer's Premium is: " + 
+                                pCal.calculatePremium(15000, 
+                                CSH, 
+                                DE));
         } else {
             System.out.println("Insurance ID not found");
         }
