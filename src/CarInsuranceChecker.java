@@ -1,24 +1,17 @@
 import java.util.Scanner;
 import java.util.Random;
 import java.util.InputMismatchException;
-import java.io.*; 
 
 class printables extends PremiumCalculator {
-    Questionnaire qu = new Questionnaire();
+    Questionnaire qu;
     InsuranceChecker fCov = new InsuranceChecker();
     InsuranceChecker pCov = new PartialCoverage();
     InsuranceChecker bCov = new BasicCoverage();
 
-    public printables(Questionnaire qu) {
+    printables(Questionnaire qu){
         this.qu = qu;
     }
-
-    public printables(InsuranceChecker fCov, InsuranceChecker pCov, InsuranceChecker bCov) {
-        this.fCov = fCov;
-        this.pCov = pCov;
-        this.bCov = bCov;
-    }
-
+    
     public boolean approved() {
         csvRelated cv = new csvRelated();
     
@@ -56,40 +49,40 @@ class printables extends PremiumCalculator {
             qu.getCarModel(),
             FullCov + PartialCov + BasicCov,
             Integer.toString(calculatePremium(15000, qu.getAccidentHistory(), qu.getDE())));
-            cv.toApproved(
-                "0",
-                String.valueOf(qu.getInsuranceID()),
-                qu.getName(),
-                String.valueOf(qu.getAge()),
-                String.valueOf(qu.getDE()),
-                qu.getCarModel(),
-                String.valueOf(qu.getCarAge()),
-                String.valueOf(qu.getAccidentHistory()),
-                qu.getPlateNumber(),
-                //
-                FullCov + PartialCov + BasicCov,
-                //
-                Integer.toString(calculatePremium(15000, qu.getAccidentHistory(), qu.getDE())));
+        cv.toApproved(
+            "0",
+            String.valueOf(qu.getInsuranceID()),
+            qu.getName(),
+            String.valueOf(qu.getAge()),
+            String.valueOf(qu.getDE()),
+            qu.getCarModel(),
+            String.valueOf(qu.getCarAge()),
+            String.valueOf(qu.getAccidentHistory()),
+            qu.getPlateNumber(),
+            //
+            FullCov + PartialCov + BasicCov,
+            //
+            Integer.toString(calculatePremium(15000, qu.getAccidentHistory(), qu.getDE())));
     
         return true; // Customer approved
     }
     
 }
 
-
 public class CarInsuranceChecker {
     public static void main(String[] args) {
+        // flag so that the loop will keep on going
         Boolean running = true;
         while (running) {
             try {
+                Questionnaire questionnaire = new Questionnaire();
+                PremiumCalculator premCalc = new PremiumCalculator();
                 Scanner sc = new Scanner(System.in);
                 System.out.println("=====================");
                 System.out.println("|| COVERAGE UNITED ||");
                 System.out.println("=====================");
                 System.out.println("[1] Insurance Checker || [2] View Insurance List || [3] Exit");
                 System.out.print("Enter: ");
-                Questionnaire questionnaire = new Questionnaire();
-                PremiumCalculator premCalc = new PremiumCalculator();
                 int answer = sc.nextInt();
 
                 if (answer == 1) {
@@ -119,7 +112,7 @@ public class CarInsuranceChecker {
                                 break;
                             } else {
                                 System.out.println("================================");
-                                System.out.println("Choose from the choices please");
+                                System.out.println("Try Again");
                                 System.out.println("================================");
                             }
                         } catch (InputMismatchException e) {
@@ -136,7 +129,7 @@ public class CarInsuranceChecker {
                     running = false;
                 } else {
                     System.out.println("================================");
-                    System.out.println("Choose from the choices please");
+                    System.out.println("Try Again");
                     System.out.println("================================");
                 }
             } catch (InputMismatchException e) {

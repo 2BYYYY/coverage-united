@@ -1,5 +1,5 @@
 "Index","InsuranceID","Plate Number","Name","Age","Car Model","TOI","Premium Amount"
 "0","704772","D2SC","toby","19","toyota","Partial Coverage","10000"
 "0","383289","GDS2","jared","33","2","Partial Coverage","10000"
-"0","628658","DGS3","josh","23","tesla","Partial Coverage","10000"
 "1","704772","FEA2","toby","19","toyota","Partial Coverage","10000"
+"3","704772","GAJ2","toby","19","toyota","Partial Coverage","30000"
