@@ -63,6 +63,7 @@ class approvedList extends registeredToAdd{
                 List<String[]> rows = csvReaderAI.readAll();
                 CSVReader csvReaderFLOI = new CSVReader(new FileReader("csvFiles/fullListOfInsurance.csv"));
                 List<String[]> rowFLOI = csvReaderFLOI.readAll();
+                System.out.println("================================================================================================================================================================");
                 for (String[] row : rows) {
                         for (String value : row) {
                             System.out.print(String.format("%-20s", value));
@@ -98,7 +99,7 @@ class approvedList extends registeredToAdd{
                             System.out.println("[2] Car delete");
                             int fOc = sc.nextInt();
                             sc.nextLine(); 
-                            System.out.print("Enter: ");
+                            System.out.print("Enter Insurance ID: ");
                             String searchName = sc.nextLine();
                             List<String[]> filteredRows = new ArrayList<>();
                             List<String[]> filteredRowsFLOI = new ArrayList<>();
@@ -191,7 +192,7 @@ class approvedList extends registeredToAdd{
                             break;
                         } else {
                             System.out.println("================================");
-                            System.out.println("Choose from the choices please");
+                            System.out.println("Try Again");
                             System.out.println("================================");
                         }
             } catch (IOException | CsvException e) {
