@@ -26,11 +26,15 @@ class registeredToAdd {
                     try (CSVWriter writer = new CSVWriter(new FileWriter("csvFiles/approvedInsurance.csv", true))) {
                         String[] updatedRow = {String.valueOf(countRows), insuranceID, PN, row[3], row[4], carModel, TOI, PM};
                         writer.writeNext(updatedRow);
-                    } catch (IOException e) {}
+                    } catch (IOException e) {
+                        System.out.println("A CSV error occurred");
+                    }
                 }
             }
 
-        } catch (IOException | CsvException e) {}
+        } catch (IOException | CsvException e) {
+            System.out.println("A CSV error occurred");
+        }
     }
     public void registerChange(String insuranceID, String PN, String carModel, String carAge, String AH, String TOI, String PM) {
         try (CSVReader csvReader = new CSVReader(new FileReader("csvFiles/fullListOfInsurance.csv"))) {
@@ -46,11 +50,15 @@ class registeredToAdd {
                     try (CSVWriter writer = new CSVWriter(new FileWriter("csvFiles/fullListOfInsurance.csv", true))) {
                         String[] updatedRow = {String.valueOf(countRows), insuranceID, row[2], row[3], row[4], carModel, carAge, AH, PN, TOI, PM};
                         writer.writeNext(updatedRow);
-                    } catch (IOException e) {}
+                    } catch (IOException e) {
+                        System.out.println("A CSV error occurred");
+                    }
                 }
             }
 
-        } catch (IOException | CsvException e) {}
+        } catch (IOException | CsvException e) {
+            System.out.println("A CSV error occurred");
+        }
     }
 }
 
@@ -186,7 +194,7 @@ class approvedList extends registeredToAdd{
                                 writer.writeNext(header);
                                 writer.writeAll(getRowsFLOI);
                             } catch(IOException e){
-                                System.out.println("Error reading CSV file: " + e.getMessage());
+                                System.out.println("A CSV error occurred");
                             }
                         } else if(choice == 5){
                             break;
@@ -196,7 +204,7 @@ class approvedList extends registeredToAdd{
                             System.out.println("================================");
                         }
             } catch (IOException | CsvException e) {
-                e.printStackTrace();
+                System.out.println("A CSV error occurred");
             }
         }
     }
@@ -210,13 +218,17 @@ class checkApproved extends approvedList{
         try (CSVWriter AWriter = new CSVWriter(new FileWriter("csvFiles/approvedInsurance.csv", true))) {
             String[] aI = {index, insuranceID, PL, name, age, carmodel, TOI, pAccount};
             AWriter.writeNext(aI);  
-        } catch (IOException i) {}
+        } catch (IOException i) {
+            System.out.println("A CSV error occurred");
+        }
     }
     public void toApproved(String number, String insuranceID, String name, String age, String DE, String carmodel, String carage, String AH, String plateNumber, String TOI, String premAcc) {
         try (CSVWriter AWriter = new CSVWriter(new FileWriter("csvFiles/fullListOfInsurance.csv", true))) {
             String[] aI2 = {number, insuranceID, name, age, DE, carmodel, carage, AH, plateNumber, TOI, premAcc};
             AWriter.writeNext(aI2);  
-        } catch (IOException i) {}
+        } catch (IOException i) {
+            System.out.println("A CSV error occurred");
+        }
     }
 }
 
@@ -232,7 +244,9 @@ class csvRelated extends checkApproved{
                     break;  
                 }
             }
-        } catch (CsvValidationException | IOException e) {}
+        } catch (CsvValidationException | IOException e) {
+            System.out.println("A CSV error occurred");
+        }
         return alreadyRegistered;  
     }
     public boolean checkInsID(String ID){
@@ -244,7 +258,9 @@ class csvRelated extends checkApproved{
                     registeredID = true;
                 }
             }
-        } catch (IOException | CsvException e) {}
+        } catch (IOException | CsvException e) {
+            System.out.println("A CSV error occurred");
+        }
         return registeredID;  
     }
 }
