@@ -8,65 +8,65 @@ class printables extends PremiumCalculator {
     InsuranceChecker pCov = new PartialCoverage();
     InsuranceChecker bCov = new BasicCoverage();
 
-    printables(Questionnaire qu){
+    printables(Questionnaire qu) {
         this.qu = qu;
     }
-    
+
     public boolean approved() {
         csvRelated cv = new csvRelated();
-    
+
         // Check if the user is under 18
         if (qu.getAge() < 18) {
             System.out.println(qu.getName() + " Not Approved (Underage)");
             return false;
         }
-    
+
         // Check if the plate number is already registered
         boolean alreadyRegistered = cv.checkPN(qu.getPlateNumber());
         if (alreadyRegistered == true) {
             System.out.println(qu.getName() + " Not Approved (Plate Number Already Registered)");
             return false;
         }
-    
+
         // If neither condition is met, proceed with the approval process
         Random rd = new Random();
         int firstSection = qu.getName().length();
         int secondSection = qu.getCarAge();
         int thirdSection = rd.nextInt(1000000);
         qu.setInsuranceID(firstSection + secondSection + thirdSection);
-    
+
         String FullCov = fCov.checkInsurance(qu.getCarAge(), qu.getAccidentHistory());
         String PartialCov = pCov.checkInsurance(qu.getCarAge(), qu.getAccidentHistory());
         String BasicCov = bCov.checkInsurance(qu.getCarAge(), qu.getAccidentHistory());
-    
+
         // Approve and register customer, premium calculation only for approved
         cv.toApproved(
-            "0",
-            String.valueOf(qu.getInsuranceID()),
-            qu.getPlateNumber(),
-            String.valueOf(qu.getName()),
-            String.valueOf(qu.getAge()),
-            qu.getCarModel(),
-            FullCov + PartialCov + BasicCov,
-            Integer.toString(calculatePremium(15000, qu.getAccidentHistory(), qu.getDE())));
+                "0",
+                String.valueOf(qu.getInsuranceID()),
+                qu.getPlateNumber(),
+                String.valueOf(qu.getName()),
+                String.valueOf(qu.getAge()),
+                qu.getCarModel(),
+                FullCov + PartialCov + BasicCov,
+                Integer.toString(calculatePremium(15000, qu.getAccidentHistory(), qu.getDE())));
         cv.toApproved(
-            "0",
-            String.valueOf(qu.getInsuranceID()),
-            qu.getName(),
-            String.valueOf(qu.getAge()),
-            String.valueOf(qu.getDE()),
-            qu.getCarModel(),
-            String.valueOf(qu.getCarAge()),
-            String.valueOf(qu.getAccidentHistory()),
-            qu.getPlateNumber(),
-            //
-            FullCov + PartialCov + BasicCov,
-            //
-            Integer.toString(calculatePremium(15000, qu.getAccidentHistory(), qu.getDE())));
-    
+                "0",
+                String.valueOf(qu.getInsuranceID()),
+                qu.getName(),
+                String.valueOf(qu.getAge()),
+                String.valueOf(qu.getDE()),
+                qu.getCarModel(),
+                String.valueOf(qu.getCarAge()),
+                String.valueOf(qu.getAccidentHistory()),
+                qu.getPlateNumber(),
+                //
+                FullCov + PartialCov + BasicCov,
+                //
+                Integer.toString(calculatePremium(15000, qu.getAccidentHistory(), qu.getDE())));
+
         return true; // Customer approved
     }
-    
+
 }
 
 public class CarInsuranceChecker {
@@ -103,10 +103,10 @@ public class CarInsuranceChecker {
                                 printables pr = new printables(questionnaire);
                                 // Only calculate and display the premium if the customer is approved
                                 if (pr.approved()) {
-                                    System.out.println("Customer's Premium is: " + 
-                                        premCalc.calculatePremium(15000, 
-                                        questionnaire.getAccidentHistory(), 
-                                        questionnaire.getDE()));
+                                    System.out.println("Customer's Premium is: " +
+                                            premCalc.calculatePremium(15000,
+                                                    questionnaire.getAccidentHistory(),
+                                                    questionnaire.getDE()));
                                 }
                             } else if (answer2 == 3) {
                                 break;
@@ -132,6 +132,7 @@ public class CarInsuranceChecker {
                     System.out.println("Try Again");
                     System.out.println("================================");
                 }
+                sc.close();
             } catch (InputMismatchException e) {
                 System.out.println("================================");
                 System.out.println("Choose from the choices please");
